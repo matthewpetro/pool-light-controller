@@ -148,7 +148,7 @@ int getNumFlips(String scene) {
     return 4;
   } else if (scene.equalsIgnoreCase("american")) {
     return 5;
-  } else if (scene.equalsIgnoreCase("california_sunset")) {
+  } else if (scene.equalsIgnoreCase("california")) {
     return 6;
   } else if (scene.equalsIgnoreCase("royal")) {
     return 7;
