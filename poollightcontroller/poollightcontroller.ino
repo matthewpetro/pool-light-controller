@@ -57,6 +57,26 @@ void setup()
   rest.set_id("1");
   rest.set_name("PoolLightController");
 
+  wifiConnect();
+}
+
+void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Wifi not connected, attempting to reconnect");
+    wifiConnect();
+  }
+  // Handle REST calls
+  WiFiClient client = server.available();
+  if (!client) {
+    return;
+  }
+  while(!client.available()){
+    delay(1);
+  }
+  rest.handle(client);
+}
+
+void wifiConnect() {
   prefs.begin(WIFI_NAMESPACE, true);
 
   String ssidString = prefs.getString(SSID_KEY);
@@ -69,6 +89,7 @@ void setup()
   prefs.end();
 
   // Connect to WiFi
+  Serial.println("Connecting to wifi");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -83,18 +104,6 @@ void setup()
 
   // Print the IP address
   Serial.println(WiFi.localIP());
-}
-
-void loop() {
-  // Handle REST calls
-  WiFiClient client = server.available();
-  if (!client) {
-    return;
-  }
-  while(!client.available()){
-    delay(1);
-  }
-  rest.handle(client);
 }
 
 int setPower(String command) {
