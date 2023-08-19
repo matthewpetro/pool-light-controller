@@ -12,6 +12,10 @@ void setup() {
 
   prefs.begin(WIFI_NAMESPACE);
 
+  // Update the next two lines to include the SSID and password you
+  // want to save to flash memory, then run this utility on the microcontroller.
+  // It will save the wifi credentials so that they can be retrieved by the
+  // pool light controller each time it starts up.
   prefs.putString(SSID_KEY, "");
   prefs.putString(PASSWORD_KEY, "");
 
