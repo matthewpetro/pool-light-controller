@@ -41,6 +41,13 @@ const int DEFAULT_WIFI_CONNECTION_CHECK_DELAY = 15000;
 String wifiSsid;
 String wifiPassword;
 
+const char CONTROLLER_NAMESPACE[] = "controller";
+const char CONTROLLER_ID_KEY[] = "id";
+const char CONTROLLER_NAME_KEY[] = "name";
+
+String controllerId;
+String controllerName;
+
 void setup()
 {
   // Start Serial
@@ -60,8 +67,9 @@ void setup()
   rest.function("scene",setScene);
 
   // Give name & ID to the device (ID should be 6 characters long)
-  rest.set_id("1");
-  rest.set_name("PoolLightController");
+  readControllerInfo();
+  rest.set_id(controllerId);
+  rest.set_name(controllerName);
 
   readWifiCredentials();
   wifiConnect(5000);
@@ -85,6 +93,15 @@ void loop() {
   int clientPort = client.remotePort();
   Serial.println("Handling client request from " + clientIP.toString() + ":" + clientPort);
   rest.handle(client);
+}
+
+void readControllerInfo() {
+  prefs.begin(CONTROLLER_NAMESPACE, true);
+
+  controllerId = prefs.getString(CONTROLLER_ID_KEY);
+  controllerName = prefs.getString(CONTROLLER_NAME_KEY);
+  
+  prefs.end();
 }
 
 void readWifiCredentials() {
