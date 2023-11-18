@@ -16,8 +16,10 @@ void setup() {
   // want to save to flash memory, then run this utility on the microcontroller.
   // It will save the ID and name so that they can be retrieved by the
   // pool light controller each time it starts up.
-  prefs.putString(CONTROLLER_ID_KEY, "2");
-  prefs.putString(CONTROLLER_NAME_KEY, "OriginalPoolLightController");
+  prefs.putString(CONTROLLER_ID_KEY, "");
+  prefs.putString(CONTROLLER_NAME_KEY, "");
+
+  delay(1000);
 
   Serial.println("The following values have been stored");
   Serial.print("Controller ID: ");
