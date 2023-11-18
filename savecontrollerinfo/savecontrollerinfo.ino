@@ -9,6 +9,7 @@ const char CONTROLLER_NAME_KEY[] = "name";
 void setup() {
   // Start Serial
   Serial.begin(921600);
+  delay(1000);
 
   prefs.begin(CONTROLLER_NAMESPACE);
 
@@ -18,9 +19,7 @@ void setup() {
   // pool light controller each time it starts up.
   prefs.putString(CONTROLLER_ID_KEY, "");
   prefs.putString(CONTROLLER_NAME_KEY, "");
-
-  delay(1000);
-
+  
   Serial.println("The following values have been stored");
   Serial.print("Controller ID: ");
   Serial.println(prefs.getString(CONTROLLER_ID_KEY));

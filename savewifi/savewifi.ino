@@ -9,6 +9,7 @@ const char PASSWORD_KEY[] = "password";
 void setup() {
   // Start Serial
   Serial.begin(921600);
+  delay(1000);
 
   prefs.begin(WIFI_NAMESPACE);
 
@@ -18,9 +19,7 @@ void setup() {
   // pool light controller each time it starts up.
   prefs.putString(SSID_KEY, "");
   prefs.putString(PASSWORD_KEY, "");
-
-  delay(1000);
-
+  
   Serial.println("The following values have been stored");
   Serial.print("SSID: ");
   Serial.println(prefs.getString(SSID_KEY));
