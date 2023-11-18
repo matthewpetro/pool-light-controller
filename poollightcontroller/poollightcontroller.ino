@@ -34,12 +34,18 @@ const int FLIP_INTERVAL_TIME = 400;
 
 const char WIFI_NAMESPACE[] = "wifi";
 const char SSID_KEY[] = "ssid";
-const char PASSWORD_KEY[] = "password"; 
+const char PASSWORD_KEY[] = "password";
+
+const int DEFAULT_WIFI_CONNECTION_CHECK_DELAY = 15000;
+
+String wifiSsid;
+String wifiPassword;
 
 void setup()
 {
   // Start Serial
   Serial.begin(921600);
+  delay(1000);
 
   pinMode(RELAY_PIN, OUTPUT);
 
@@ -57,42 +63,55 @@ void setup()
   rest.set_id("1");
   rest.set_name("PoolLightController");
 
-  wifiConnect();
+  readWifiCredentials();
+  wifiConnect(5000);
 }
 
 void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("Wifi not connected, attempting to reconnect");
-    wifiConnect();
+    wifiConnect(30000);
   }
   // Handle REST calls
   WiFiClient client = server.available();
   if (!client) {
     return;
   }
+  Serial.println("Got client, waiting for it to become available");
   while(!client.available()){
     delay(1);
   }
+  IPAddress clientIP = client.remoteIP();
+  int clientPort = client.remotePort();
+  Serial.println("Handling client request from " + clientIP.toString() + ":" + clientPort);
   rest.handle(client);
 }
 
-void wifiConnect() {
+void readWifiCredentials() {
   prefs.begin(WIFI_NAMESPACE, true);
 
-  String ssidString = prefs.getString(SSID_KEY);
-  String passwordString = prefs.getString(PASSWORD_KEY);
-  char ssid[ssidString.length()+1];
-  char password[passwordString.length()+1];
-  ssidString.toCharArray(ssid, ssidString.length()+1);
-  passwordString.toCharArray(password, passwordString.length()+1);
-
+  wifiSsid = prefs.getString(SSID_KEY);
+  wifiPassword = prefs.getString(PASSWORD_KEY);
+  
   prefs.end();
+}
+
+void wifiConnect(int connectionCheckDelay) {
+  // Default connection check timeout
+  int connectionCheckTimeout = DEFAULT_WIFI_CONNECTION_CHECK_DELAY;
+  if (connectionCheckDelay > 0 ){
+    connectionCheckTimeout = connectionCheckDelay;
+  }
+  char ssid[wifiSsid.length()+1];
+  char password[wifiPassword.length()+1];
+  wifiSsid.toCharArray(ssid, wifiSsid.length()+1);
+  wifiPassword.toCharArray(password, wifiPassword.length()+1);
 
   // Connect to WiFi
   Serial.println("Connecting to wifi");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(connectionCheckTimeout);
     Serial.print(".");
   }
   Serial.println("");
