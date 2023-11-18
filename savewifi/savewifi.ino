@@ -19,6 +19,8 @@ void setup() {
   prefs.putString(SSID_KEY, "");
   prefs.putString(PASSWORD_KEY, "");
 
+  delay(1000);
+
   Serial.println("The following values have been stored");
   Serial.print("SSID: ");
   Serial.println(prefs.getString(SSID_KEY));
