@@ -126,6 +126,7 @@ void wifiConnect(int connectionCheckDelay) {
 
   // Connect to WiFi
   Serial.println("Connecting to wifi");
+  WiFi.setAutoReconnect(true);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(connectionCheckTimeout);
