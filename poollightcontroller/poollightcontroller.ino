@@ -133,7 +133,7 @@ void wifiConnect(int connectionCheckDelay) {
     Serial.print(".");
   }
   Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.println("Wifi connected");
 
   // Start the server
   server.begin();
